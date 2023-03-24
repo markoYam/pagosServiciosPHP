@@ -1,0 +1,23 @@
+.card-pago {
+	margin-bottom: 20px;
+}
+
+.card-pago .card-header {
+	background-color: #007bff;
+	color: #fff;
+}
+
+.card-pago .card-footer {
+	background-color: #f6f6f6;
+}
+
+.card-pago .card-footer button {
+	width: 100%;
+}
+
+@media (min-width: 576px) {
+	.card-pago {
+		margin-right: 10px;
+		margin-left: 10px;
+	}
+}
