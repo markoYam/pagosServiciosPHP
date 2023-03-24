@@ -12,6 +12,7 @@ $(document).ready(function () {
             data: $('#form-agregar').serialize() + '&accion=agregar',
             success: function (response) {
                 $('#form-agregar')[0].reset();
+                swal("Exitoso", "Agregado correctamente", "success");
                 obtenerPagos();
             }
         });
@@ -93,6 +94,7 @@ $(document).ready(function () {
             success: function (response) {
                 $('#form-editar')[0].reset();
                 $('#modal-editar').modal('hide');
+                swal("Exitoso", "Modificado correctamente", "success");
                 obtenerPagos();
             }
         });
@@ -100,18 +102,34 @@ $(document).ready(function () {
 
     // Eliminar un pago
     $(document).on('click', '.btn-eliminar', function () {
-        if (confirm('¿Estás seguro de que quieres eliminar este pago?')) {
-            let id = $(this).data('id');
+        swal({
+            title: "Eliminar",
+            text: "¿Esta seguro que desea eliminar el registro?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                let id = $(this).data('id');
+                $.ajax({
+                    url: 'acciones.php',
+                    type: 'POST',
+                    data: { id: id, accion: 'eliminar' },
+                    success: function (response) {
+                        swal("Exitoso", "Eliminado correctamente", "success");
+                        obtenerPagos();
+                    }
+                });
+              
+              
+            } 
+              
+            
+          });
 
-            $.ajax({
-                url: 'acciones.php',
-                type: 'POST',
-                data: { id: id, accion: 'eliminar' },
-                success: function (response) {
-                    obtenerPagos();
-                }
-            });
-        }
+
+      
     });
 
     // Función para obtener la lista de pagos
