@@ -1,22 +1,28 @@
 <?php
-$host = "";
-$user = "";
+$host = "localhost";
+$user = "root";
 $pass = "";
-$db = "";
+$db = "pagosServicios";
 
+$data = array();
 
 $conexion = new mysqli($host, $user, $pass,$db);
 
 if($conexion->connect_errno){
-    echo "Error al conectar a la base de datos: " . $conexion->connect_error;
+    $data["error"] = true;
+    $data["status"] = 500;
+    $data["message"] = "Error al conectar a la base de datos: " . $conexion->connect_error;
+    echo json_encode($data);
 }
+
+
 
 // Acción de agregar un nuevo pago
 if($_POST['accion'] == 'agregar'){
     $nombre = $_POST['nombre'];
     $servicio = $_POST['servicio'];
     $cuenta = $_POST['cuenta'];
-    echo $cuenta;
+    //echo $cuenta;
     $cantidad = $_POST['cantidad'];
     $comision = 20;
     $fecha = date("Y-m-d");
@@ -25,10 +31,19 @@ if($_POST['accion'] == 'agregar'){
     $sql = "INSERT INTO pagos (nombre, servicio, cantidad, comision, estatus, cuenta,fecha) VALUES ('$nombre', '$servicio', '$cantidad', '$comision', '$estatus','$cuenta','$fecha')";
 
     if($conexion->query($sql) === true){
-        echo "Pago agregado correctamente";
+        $data["error"] = false;
+        $data["code"] = 200;
+        $data["message"] = "Pago agregado correctamente";
+        
+        //echo "Pago agregado correctamente";
     }else{
-        echo "Error al agregar el pago: " . $conexion->error;
+        $data["error"] = true;
+        $data["status"] = 400;
+        $data["message"] = "Error al agregar el pago: " . $conexion->error;
+        //echo "Error al agregar el pago: " . $conexion->error;
     }
+
+    echo json_encode($data);
 }
 
 // Acción de obtener la información de un pago específico
@@ -54,23 +69,30 @@ if($_POST['accion'] == 'actualizar'){
     $fecha = date("Ymd");
     $nombreArchivo = 'Comprobante'.$nombre.$cuenta.$fecha.'.jpg';
 
-    echo $nombreArchivo;
+    //echo $nombreArchivo;
 
     if(isset($_FILES['comprobante'])) {
-        echo $_FILES['comprobante'];
+        //echo $_FILES['comprobante'];
         $rutaTemporal = $_FILES['comprobante']['tmp_name'];
-        echo $rutaTemporal;
+        //echo $rutaTemporal;
         $rutaDestino = '/comprobantes/' . $nombreArchivo;
         move_uploaded_file($rutaTemporal, __DIR__ . $rutaDestino);
     }
 
     $sql = "UPDATE pagos SET nombre='$nombre', servicio='$servicio', cantidad='$cantidad', estatus='$estatus', cuenta='$cuenta' WHERE id=$id";
-echo $sql;
+    //echo $sql;
     if($conexion->query($sql) === true){
-        echo "Pago actualizado correctamente";
+        $data["error"] = false;
+        $data["code"] = 200;
+        $data["message"] = "Pago actualizado correctamente";
+        //echo "Pago actualizado correctamente";
     }else{
-        echo "Error al actualizar el pago: " . $conexion->error;
+        $data["error"] = true;
+        $data["status"] = 400;
+        $data["message"] = "Error al actualizar el pago: " . $conexion->error;
+        //echo "Error al actualizar el pago: " . $conexion->error;
     }
+    echo json_encode($data);
 }
 
 // Acción de eliminar un pago
@@ -80,10 +102,16 @@ if($_POST['accion'] == 'eliminar'){
     $sql = "DELETE FROM pagos WHERE id = $id";
 
     if($conexion->query($sql) === true){
-        echo "Pago eliminado correctamente";
+        $data["error"] = false;
+        $data["code"] = 200;
+        $data["message"] = "Pago eliminado correctamente";
+       
     }else{
-        echo "Error al eliminar el pago: " . $conexion->error;
+        $data["error"] = true;
+        $data["status"] = 400;
+        $data["message"] = "Error al eliminar el pago: " . $conexion->error;
     }
+    echo json_encode($data);
 }
 
 // Acción de obtener todos los pagos

@@ -11,8 +11,14 @@ $(document).ready(function () {
             type: 'POST',
             data: $('#form-agregar').serialize() + '&accion=agregar',
             success: function (response) {
+                let result = JSON.parse(response);
                 $('#form-agregar')[0].reset();
-                swal("Exitoso", "Agregado correctamente", "success");
+                
+                if(result.code == 200){
+                    swal("Exitoso", "Agregado correctamente", "success");
+                }else{
+                    swal("Error", "Error al agregar registro", "error");
+                }
                 obtenerPagos();
             }
         });
@@ -83,8 +89,6 @@ $(document).ready(function () {
         const comprobante = $('#comprobante')[0].files[0];
         formData.append('comprobante', comprobante);
 
-
-
         $.ajax({
             url: 'acciones.php',
             type: 'POST',
@@ -92,9 +96,16 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (response) {
+                let result = JSON.parse(response);
                 $('#form-editar')[0].reset();
                 $('#modal-editar').modal('hide');
-                swal("Exitoso", "Modificado correctamente", "success");
+
+                if(result.code == 200){
+                    swal("Exitoso", "Modificado correctamente", "success");
+                }else{
+                    swal("Error", "Error al modificar registro", "error");
+                }
+                
                 obtenerPagos();
             }
         });
@@ -117,7 +128,13 @@ $(document).ready(function () {
                     type: 'POST',
                     data: { id: id, accion: 'eliminar' },
                     success: function (response) {
-                        swal("Exitoso", "Eliminado correctamente", "success");
+                        let result = JSON.parse(response);
+                        if(result.code == 200){
+                            swal("Exitoso", "Eliminado correctamente", "success");
+                        }else{
+                            swal("Error", "Error al eliminar registro", "error");
+                        }
+                        
                         obtenerPagos();
                     }
                 });
